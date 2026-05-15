@@ -35,13 +35,23 @@ CUDAC = nvcc
 # Enable nvvp profiling of CPU code by using "make ENABLE_NVTOOLS=1"
 # If aligned_alloc() is not available, use "make NO_ALIGNED_ALLOC=1"
 
+NVCC_VERSION = $(shell nvcc --version | grep -oP 'release \K[0-9]+' | head -n 1)
+
+ifeq ($(shell test $(NVCC_VERSION) -lt 13; echo $$?), 0)
 # SM versions for which code is generated must be sm_30 and above
-GENCODE_SM35  := -gencode arch=compute_35,code=sm_35
-GENCODE_SM50  := -gencode arch=compute_50,code=sm_50
-GENCODE_SM52  := -gencode arch=compute_52,code=sm_52
-GENCODE_SM61  := -gencode arch=compute_61,code=sm_61
-GENCODE_SM70  := -gencode arch=compute_70,code=sm_70
-GENCODE_FLAGS := $(GENCODE_SM50) $(GENCODE_SM52) $(GENCODE_SM61) $(GENCODE_SM70)
+	#GENCODE_SM35  := -gencode arch=compute_35,code=sm_35
+	GENCODE_SM50  := -gencode arch=compute_50,code=sm_50
+	GENCODE_SM52  := -gencode arch=compute_52,code=sm_52
+	GENCODE_SM61  := -gencode arch=compute_61,code=sm_61
+	GENCODE_SM70  := -gencode arch=compute_70,code=sm_70
+	GENCODE_FLAGS := $(GENCODE_SM50) $(GENCODE_SM52) $(GENCODE_SM61) $(GENCODE_SM70)
+else
+	GENCODE_SM80  := -gencode arch=compute_80,code=sm_80
+	GENCODE_SM90  := -gencode arch=compute_90,code=sm_90
+	GENCODE_SM100  := -gencode arch=compute_100,code=sm_100
+	GENCODE_SM120  := -gencode arch=compute_120,code=sm_120
+	GENCODE_FLAGS := $(GENCODE_SM80) $(GENCODE_SM90) $(GENCODE_SM100) $(GENCODE_SM120)
+endif
 
 #######################################################
 
