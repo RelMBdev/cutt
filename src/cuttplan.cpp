@@ -785,7 +785,7 @@ void printMatlab(cudaDeviceProp& prop, std::list<cuttPlan_t>& plans, std::vector
   count++;
   int i = 0;
   // Conversion factor from wallclok time to total number of cycles = (GPU clock in Hz) x #SM
-  double freq_SM = (double)(prop.clockRate*1000)*(double)prop.multiProcessorCount;
+  double freq_SM = (double)(get_deviceClockRate()*1000)*(double)prop.multiProcessorCount;
   for (auto it=plans.begin();it != plans.end();it++,i++) {
     TensorSplit& ts = it->tensorSplit;
     LaunchConfig& lc = it->launchConfig;

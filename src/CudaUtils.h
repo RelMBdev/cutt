@@ -105,4 +105,7 @@ void gpuRangeStart(const char *range_name);
 void gpuRangeStop();
 #endif
 
+int get_deviceClockRate(int device_id=0);
+int get_deviceMemoryClockRate(int device_id=0);
+
 #endif // CUDAUTILS_H

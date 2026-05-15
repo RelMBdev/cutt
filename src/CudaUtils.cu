@@ -95,4 +95,17 @@ void gpuRangeStart(const char *range_name) {
 void gpuRangeStop() {
   nvtxRangePop();
 }
+
 #endif
+
+int get_deviceClockRate(int device_id){
+  int clockRate;
+  cudaDeviceGetAttribute(&clockRate, cudaDevAttrClockRate, device_id);
+  return clockRate;
+}
+
+int get_deviceMemoryClockRate(int device_id){
+  int memoryClockRate;
+  cudaDeviceGetAttribute(&memoryClockRate, cudaDevAttrMemoryClockRate, device_id);
+  return memoryClockRate;
+}

@@ -29,9 +29,7 @@ SOFTWARE.
 #include <cstring>               // memcpy
 #include "cuttGpuModel.h"
 #include "cuttGpuModelKernel.h"
-#ifdef ENABLE_NVTOOLS
 #include "CudaUtils.h"
-#endif
 
 // #define CALC_L1_CACHELINES
 
@@ -803,10 +801,10 @@ void prepmodel5(cudaDeviceProp& prop, GpuModelProp& gpuModelProp,
 
   double active_SM = prop.multiProcessorCount;
   // Memory bandwidth in GB/s
-  double mem_BW = (double)(prop.memoryClockRate*2*(prop.memoryBusWidth/8))/1.0e6;
+  double mem_BW = (double)(get_deviceMemoryClockRate()*2*(prop.memoryBusWidth/8))/1.0e6;
   if (prop.ECCEnabled) mem_BW *= (1.0 - 0.125);
   // GPU clock in GHz
-  double freq = (double)prop.clockRate/1.0e6;
+  double freq = (double)get_deviceClockRate()/1.0e6;
   int warpSize = prop.warpSize;
 
   int active_warps_per_SM = nthread*numActiveBlock/warpSize;
