@@ -150,7 +150,7 @@ public:
   int cl_full_l2, cl_part_l2;
   int cl_full_l1, cl_part_l1;
   int sld_req, sst_req, sld_tran, sst_tran;
-  double cycles;
+  double cycles, bestTime;
 
   //--------------
   // Host buffers

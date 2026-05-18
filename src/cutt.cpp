@@ -295,6 +295,9 @@ cuttResult cuttPlanMeasure(cuttHandle* handle, int rank, int* dim, int* permutat
   // that they won't be deallocated later when the object is destroyed
   bestPlan->nullDevicePointers();
 
+  // Save best time
+  bestPlan->bestTime = bestTime;
+
   // Set stream
   plan->setStream(stream);
 
@@ -365,4 +368,14 @@ void cuttInitialize() {
 }
 
 void cuttFinalize() {
+}
+
+double getCuttPlanCycles(cuttHandle handle){
+  auto it = planStorage.find(handle);
+  return it->second->cycles;
+}
+
+double getCuttBestTime(cuttHandle handle){
+  auto it = planStorage.find(handle);
+  return it->second->bestTime;
 }

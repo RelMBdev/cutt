@@ -112,4 +112,25 @@ cuttResult cuttDestroy(cuttHandle handle);
 //
 cuttResult cuttExecute(cuttHandle handle, void* idata, void* odata);
 
+//
+// Access cycles attribute of cuTT plan
+//
+// Parameters
+// handle            = Returned handle to cuTT plan
+// 
+// Returns
+// Number of cycles of the plan
+//
+double getCuttPlanCycles(cuttHandle handle);
+
+//
+// Access time of best cuTT plan
+//
+// Parameters
+// handle            = Returned handle to cuTT plan
+// 
+// Returns
+// Number of cycles of the plan
+//
+double getCuttBestTime(cuttHandle handle);
 #endif // CUTT_H
