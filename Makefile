@@ -26,8 +26,8 @@
 #################### User Settings ####################
 
 # C++ compiler
-HOST_CC = g++
-GPU_CC = /usr/bin/g++
+HOST_CC ?= g++
+GPU_CC ?= /usr/bin/g++
 
 # CUDA compiler
 CUDAC = nvcc
@@ -46,12 +46,14 @@ ifeq ($(shell test $(NVCC_VERSION) -lt 13; echo $$?), 0)
 	GENCODE_SM70  := -gencode arch=compute_70,code=sm_70
 	GENCODE_SM80  := -gencode arch=compute_80,code=sm_80
 	GENCODE_FLAGS := $(GENCODE_SM50) $(GENCODE_SM52) $(GENCODE_SM61) $(GENCODE_SM70) $(GENCODE_SM80)
+        CXX_STD_VERSION ?= c++11 
 else
 	GENCODE_SM80  := -gencode arch=compute_80,code=sm_80
 	GENCODE_SM90  := -gencode arch=compute_90,code=sm_90
 	GENCODE_SM100  := -gencode arch=compute_100,code=sm_100
 	GENCODE_SM120  := -gencode arch=compute_120,code=sm_120
 	GENCODE_FLAGS := $(GENCODE_SM80) $(GENCODE_SM90) $(GENCODE_SM100) $(GENCODE_SM120)
+        CXX_STD_VERSION ?= c++17 
 endif
 
 #######################################################
@@ -101,12 +103,12 @@ OBJS = $(OBJSLIB) $(OBJSTEST) $(OBJSBENCH)
 
 CUDAROOT = $(subst /bin/,,$(dir $(shell which $(CUDAC))))
 
-CFLAGS = -I${CUDAROOT}/include -std=c++11 $(DEFS) $(OPTLEV) -fPIC
+CFLAGS = -I${CUDAROOT}/include -std=$(CXX_STD_VERSION) $(DEFS) $(OPTLEV) -fPIC
 ifeq ($(CPU),x86_64)
 CFLAGS += -march=native
 endif
 
-CUDA_CFLAGS = -ccbin $(GPU_CC) -I${CUDAROOT}/include -std=c++11 $(OPTLEV) -Xptxas -dlcm=ca -lineinfo $(GENCODE_FLAGS) --resource-usage -Xcompiler "$(CUDA_CCFLAGS)" $(DEFS) -Xcompiler -fPIC -D_FORCE_INLINES
+CUDA_CFLAGS = -ccbin $(GPU_CC) -I${CUDAROOT}/include -std=$(CXX_STD_VERSION) $(OPTLEV) -Xptxas -dlcm=ca -lineinfo $(GENCODE_FLAGS) --resource-usage -Xcompiler "$(CUDA_CCFLAGS)" $(DEFS) -Xcompiler -fPIC -D_FORCE_INLINES
 
 ifeq ($(OS),osx)
 CUDA_LFLAGS = -L$(CUDAROOT)/lib
