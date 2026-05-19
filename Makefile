@@ -102,17 +102,20 @@ OBJS = $(OBJSLIB) $(OBJSTEST) $(OBJSBENCH)
 
 CUDAROOT = $(subst /bin/,,$(dir $(shell which $(CUDAC))))
 
-CFLAGS = -I${CUDAROOT}/include -std=$(CXX_STD_VERSION) $(DEFS) $(OPTLEV) -fPIC
+EXTRA_CFLAGS ?= 
+CFLAGS = -I${CUDAROOT}/include -std=$(CXX_STD_VERSION) $(DEFS) $(OPTLEV) -fPIC ${EXTRA_CFLAGS}
 ifeq ($(CPU),x86_64)
 CFLAGS += -march=native
 endif
 
 CUDA_CFLAGS = -ccbin $(GPU_CC) -I${CUDAROOT}/include -std=$(CXX_STD_VERSION) $(OPTLEV) -Xptxas -dlcm=ca -lineinfo $(GENCODE_FLAGS) --resource-usage -Xcompiler "$(CUDA_CCFLAGS)" $(DEFS) -Xcompiler -fPIC -D_FORCE_INLINES
 
+EXTRA_CUDA_LFLAGS ?=
+CUDA_LFLAGS ?= ${EXTRA_CUDA_LFLAGS}
 ifeq ($(OS),osx)
-CUDA_LFLAGS = -L$(CUDAROOT)/lib
+CUDA_LFLAGS += -L$(CUDAROOT)/lib
 else
-CUDA_LFLAGS = -L$(CUDAROOT)/lib64
+CUDA_LFLAGS += -L$(CUDAROOT)/lib64
 endif
 
 CUDA_LFLAGS += -fPIC
@@ -136,6 +139,8 @@ lib/libcutt.a: $(OBJSLIB)
 
 bin/cutt_test : lib/libcutt.a $(OBJSTEST)
 	mkdir -p bin
+	echo $(CUDA_LFLAGS)
+	echo $(EXTRA_CUDA_LFLAGS)
 	$(HOST_CC) -o bin/cutt_test $(OBJSTEST) $(CUDA_LFLAGS)
 
 bin/cutt_bench : lib/libcutt.a $(OBJSBENCH)
